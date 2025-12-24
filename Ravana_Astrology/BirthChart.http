@@ -1,0 +1,47 @@
+@Ravana_Astrology_HostAddress = http://localhost:5188
+GET {{Ravana_Astrology_HostAddress}}/api/birthchart/supported-house-systems
+
+###############################################
+# Simplified Planet-Signs Endpoint
+###############################################
+
+### Get Planet Signs - Sri Lanka (Colombo)
+POST {{Ravana_Astrology_HostAddress}}/api/birthchart/planet-signs
+Content-Type: application/json
+
+{
+  "birthDate": "1987-10-09",
+  "birthTime": "14:41",
+  "latitude": 6.9271,
+  "longitude": 79.8612,
+  "timeZoneId": "Asia/Colombo"
+}
+
+###############################################
+# Ascendant (Lagna) Endpoint
+###############################################
+
+### Get Ascendant Sign - Sri Lanka (Colombo)
+POST {{Ravana_Astrology_HostAddress}}/api/birthchart/ascendant
+Content-Type: application/json
+
+{
+  "birthDate": "1987-10-09",
+  "birthTime": "14:41",
+  "latitude": 6.9271,
+  "longitude": 79.8612,
+  "timeZoneId": "Asia/Colombo"
+}
+### Calculate Birth Chart - India (New Delhi)
+POST {{Ravana_Astrology_HostAddress}}/api/birthchart/calculate
+Content-Type: application/json
+
+{
+  "birthDate": "1987-09-10",
+  "birthTime": "14:41",
+  "latitude": 6.9271,
+  "longitude": 79.8612,
+  "timeZoneId": "Asia/Colombo",
+  "houseSystem": "WholeSign",
+  "includeTrueNode": true
+}
