@@ -1,6 +1,8 @@
 @Ravana_Astrology_HostAddress = http://localhost:5188
 GET {{Ravana_Astrology_HostAddress}}/api/birthchart/supported-house-systems
 
+# curl -X GET http://localhost:5188/api/birthchart/supported-house-systems
+
 ###############################################
 # Simplified Planet-Signs Endpoint
 ###############################################
@@ -17,6 +19,30 @@ Content-Type: application/json
   "timeZoneId": "Asia/Colombo"
 }
 
+# curl -X POST http://localhost:5188/api/birthchart/planet-signs \
+#   -H "Content-Type: application/json" \
+#   -d '{"birthDate":"1987-10-09","birthTime":"14:41","latitude":6.9271,"longitude":79.8612,"timeZoneId":"Asia/Colombo"}'
+
+###############################################
+# Navāṁśa Chart (D9) Endpoint
+###############################################
+
+### Get Navamsa Signs - Sri Lanka (Colombo)
+POST {{Ravana_Astrology_HostAddress}}/api/birthchart/navamsa-signs
+Content-Type: application/json
+
+{
+  "birthDate": "1987-10-09",
+  "birthTime": "14:41",
+  "latitude": 6.9271,
+  "longitude": 79.8612,
+  "timeZoneId": "Asia/Colombo"
+}
+
+# curl -X POST http://localhost:5188/api/birthchart/navamsa-signs \
+#   -H "Content-Type: application/json" \
+#   -d '{"birthDate":"1987-10-09","birthTime":"14:41","latitude":6.9271,"longitude":79.8612,"timeZoneId":"Asia/Colombo"}'
+
 ###############################################
 # Ascendant (Lagna) Endpoint
 ###############################################
@@ -32,6 +58,35 @@ Content-Type: application/json
   "longitude": 79.8612,
   "timeZoneId": "Asia/Colombo"
 }
+
+# curl -X POST http://localhost:5188/api/birthchart/ascendant \
+#   -H "Content-Type: application/json" \
+#   -d '{"birthDate":"1987-10-09","birthTime":"14:41","latitude":6.9271,"longitude":79.8612,"timeZoneId":"Asia/Colombo"}'
+
+###############################################
+# Navāṁśa Ascendant (D9 Lagna) Endpoint
+###############################################
+
+### Get Navamsa Ascendant Sign - Sri Lanka (Colombo)
+POST {{Ravana_Astrology_HostAddress}}/api/birthchart/navamsa-ascendant
+Content-Type: application/json
+
+{
+  "birthDate": "1987-10-09",
+  "birthTime": "14:41",
+  "latitude": 6.9271,
+  "longitude": 79.8612,
+  "timeZoneId": "Asia/Colombo"
+}
+
+# curl -X POST http://localhost:5188/api/birthchart/navamsa-ascendant \
+#   -H "Content-Type: application/json" \
+#   -d '{"birthDate":"1987-10-09","birthTime":"14:41","latitude":6.9271,"longitude":79.8612,"timeZoneId":"Asia/Colombo"}'
+
+###############################################
+# Full Birth Chart Calculation
+###############################################
+
 ### Calculate Birth Chart - India (New Delhi)
 POST {{Ravana_Astrology_HostAddress}}/api/birthchart/calculate
 Content-Type: application/json
@@ -45,3 +100,7 @@ Content-Type: application/json
   "houseSystem": "WholeSign",
   "includeTrueNode": true
 }
+
+# curl -X POST http://localhost:5188/api/birthchart/calculate \
+#   -H "Content-Type: application/json" \
+#   -d '{"birthDate":"1987-09-10","birthTime":"14:41","latitude":6.9271,"longitude":79.8612,"timeZoneId":"Asia/Colombo","houseSystem":"WholeSign","includeTrueNode":true}'

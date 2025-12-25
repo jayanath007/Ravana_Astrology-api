@@ -170,5 +170,63 @@ namespace Ravana_Astrology.Utilities
                 _ => planetName
             };
         }
+
+        /// <summary>
+        /// Calculate the Navāṁśa (D9) sign for a given sidereal longitude.
+        /// The Navāṁśa is a divisional chart where each sign is divided into 9 parts of 3°20' each.
+        /// </summary>
+        /// <param name="sidereaLongitude">Sidereal ecliptic longitude in degrees</param>
+        /// <returns>Navāṁśa zodiac sign (1-12)</returns>
+        public static Chart CalculateNavamsaSign(double sidereaLongitude)
+        {
+            var normalizedLongitude = NormalizeDegrees(sidereaLongitude);
+
+            // Get the natal (Rāśi) sign (1-12)
+            int natalSign = (int)(normalizedLongitude / 30.0) + 1;
+
+            // Get position within the natal sign (0-30 degrees)
+            double degreeInSign = normalizedLongitude % 30.0;
+
+            // Calculate which Navāṁśa division (0-8) within the sign
+            // Each division is 3°20' (3.333333 degrees)
+            int division = (int)(degreeInSign / (30.0 / 9.0));
+
+            // Ensure division is within bounds (0-8)
+            if (division > 8) division = 8;
+
+            // Get the starting Navāṁśa sign based on natal sign's element
+            int navamsaStartSign = GetNavamsaStartSign(natalSign);
+
+            // Calculate final Navāṁśa sign using circular addition
+            int navamsaSignNumber = ((navamsaStartSign - 1 + division) % 12) + 1;
+
+            return (Chart)navamsaSignNumber;
+        }
+
+        /// <summary>
+        /// Determine the starting Navāṁśa sign based on the natal sign's element.
+        /// Fire signs start from Aries, Earth from Capricorn, Air from Libra, Water from Cancer.
+        /// </summary>
+        /// <param name="natalSign">Natal (Rāśi) sign number (1-12)</param>
+        /// <returns>Starting Navāṁśa sign number (1-12)</returns>
+        private static int GetNavamsaStartSign(int natalSign)
+        {
+            // Element pattern repeats every 4 signs:
+            // 1, 5, 9 (Aries, Leo, Sagittarius) = Fire → Start at Aries (1)
+            // 2, 6, 10 (Taurus, Virgo, Capricorn) = Earth → Start at Capricorn (10)
+            // 3, 7, 11 (Gemini, Libra, Aquarius) = Air → Start at Libra (7)
+            // 4, 8, 12 (Cancer, Scorpio, Pisces) = Water → Start at Cancer (4)
+
+            int elementGroup = (natalSign - 1) % 4;
+
+            return elementGroup switch
+            {
+                0 => 1,  // Fire → Aries
+                1 => 10, // Earth → Capricorn
+                2 => 7,  // Air → Libra
+                3 => 4,  // Water → Cancer
+                _ => 1   // Default fallback
+            };
+        }
     }
 }

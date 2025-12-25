@@ -132,6 +132,73 @@ namespace Ravana_Astrology.Controllers
         }
 
         /// <summary>
+        /// Calculate planetary Navāṁśa positions (D9 divisional chart) and return a
+        /// simplified list of planets with their Navāṁśa signs.
+        /// </summary>
+        /// <param name="request">Simplified planet sign request</param>
+        /// <returns>Simplified list of planets with their Navāṁśa zodiac signs</returns>
+        [HttpPost("navamsa-signs")]
+        [ProducesResponseType(typeof(List<PlanetSignResponse>), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status500InternalServerError)]
+        public async Task<ActionResult<List<PlanetSignResponse>>> GetNavamsaSigns(
+            [FromBody] PlanetSignRequest request)
+        {
+            try
+            {
+                if (!ModelState.IsValid)
+                {
+                    return BadRequest(ModelState);
+                }
+
+                // Convert to full request with default values
+                var fullRequest = new BirthChartRequest
+                {
+                    BirthDate = request.BirthDate,
+                    BirthTime = request.BirthTime,
+                    Latitude = request.Latitude,
+                    Longitude = request.Longitude,
+                    TimeZoneId = request.TimeZoneId,
+                    HouseSystem = Enums.HouseSystem.WholeSign, // Default for Vedic
+                    IncludeTrueNode = false, // Use Mean Node
+                    CalculationType = Enums.CalculationType.Vedic // Use Vedic/Kundli system
+                };
+
+                var result = await _astrologyService.CalculateBirthChart(fullRequest);
+
+                // Calculate Navamsa positions for each planet
+                var navamsaSigns = result.Planets.Select(p => new PlanetSignResponse
+                {
+                    Planet = Utilities.AstrologyHelper.GetSinhalaPlanetName(p.Planet),
+                    Sign = (int)Utilities.AstrologyHelper.CalculateNavamsaSign(p.EclipticLongitude)
+                }).ToList();
+
+                return Ok(navamsaSigns);
+            }
+            catch (ArgumentException ex)
+            {
+                _logger.LogWarning(ex, "Invalid request parameters");
+                return BadRequest(new ProblemDetails
+                {
+                    Title = "Invalid Request",
+                    Detail = ex.Message,
+                    Status = StatusCodes.Status400BadRequest
+                });
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error calculating Navamsa signs");
+                return StatusCode(StatusCodes.Status500InternalServerError,
+                    new ProblemDetails
+                    {
+                        Title = "Calculation Error",
+                        Detail = "An error occurred while calculating Navamsa signs",
+                        Status = StatusCodes.Status500InternalServerError
+                    });
+            }
+        }
+
+        /// <summary>
         /// Get the Ascendant (Lagna) zodiac sign based on birth date, time, and location.
         /// </summary>
         /// <param name="request">Simplified planet sign request</param>
@@ -190,6 +257,72 @@ namespace Ravana_Astrology.Controllers
                     {
                         Title = "Calculation Error",
                         Detail = "An error occurred while calculating the ascendant sign",
+                        Status = StatusCodes.Status500InternalServerError
+                    });
+            }
+        }
+
+        /// <summary>
+        /// Get the Ascendant (Lagna) Navāṁśa zodiac sign based on birth date, time, and location.
+        /// Returns the D9 divisional chart position of the ascendant.
+        /// </summary>
+        /// <param name="request">Simplified planet sign request</param>
+        /// <returns>Navāṁśa ascendant zodiac sign</returns>
+        [HttpPost("navamsa-ascendant")]
+        [ProducesResponseType(typeof(AscendantSignResponse), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status500InternalServerError)]
+        public async Task<ActionResult<AscendantSignResponse>> GetNavamsaAscendantSign(
+            [FromBody] PlanetSignRequest request)
+        {
+            try
+            {
+                if (!ModelState.IsValid)
+                {
+                    return BadRequest(ModelState);
+                }
+
+                // Convert to full request with default values
+                var fullRequest = new BirthChartRequest
+                {
+                    BirthDate = request.BirthDate,
+                    BirthTime = request.BirthTime,
+                    Latitude = request.Latitude,
+                    Longitude = request.Longitude,
+                    TimeZoneId = request.TimeZoneId,
+                    HouseSystem = Enums.HouseSystem.WholeSign, // Default for Vedic
+                    IncludeTrueNode = false, // Use Mean Node
+                    CalculationType = Enums.CalculationType.Vedic // Use Vedic/Kundli system
+                };
+
+                var result = await _astrologyService.CalculateBirthChart(fullRequest);
+
+                // Calculate Navamsa position of the ascendant
+                var navamsaAscendantSign = new AscendantSignResponse
+                {
+                    Sign = (int)Utilities.AstrologyHelper.CalculateNavamsaSign(result.Ascendant.Degree)
+                };
+
+                return Ok(navamsaAscendantSign);
+            }
+            catch (ArgumentException ex)
+            {
+                _logger.LogWarning(ex, "Invalid request parameters");
+                return BadRequest(new ProblemDetails
+                {
+                    Title = "Invalid Request",
+                    Detail = ex.Message,
+                    Status = StatusCodes.Status400BadRequest
+                });
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error calculating Navamsa ascendant sign");
+                return StatusCode(StatusCodes.Status500InternalServerError,
+                    new ProblemDetails
+                    {
+                        Title = "Calculation Error",
+                        Detail = "An error occurred while calculating the Navamsa ascendant sign",
                         Status = StatusCodes.Status500InternalServerError
                     });
             }
