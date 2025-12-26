@@ -228,5 +228,76 @@ namespace Ravana_Astrology.Utilities
                 _ => 1   // Default fallback
             };
         }
+
+        /// <summary>
+        /// Calculate nakshatra (lunar mansion) number from sidereal longitude.
+        /// </summary>
+        /// <param name="sidereaLongitude">Sidereal ecliptic longitude in degrees</param>
+        /// <returns>Nakshatra number (1-27)</returns>
+        public static int GetNakshatra(double sidereaLongitude)
+        {
+            var normalizedLongitude = NormalizeDegrees(sidereaLongitude);
+            return (int)(normalizedLongitude / Constants.VimshottariConstants.NAKSHATRA_SPAN) + 1;
+        }
+
+        /// <summary>
+        /// Get nakshatra name from nakshatra number.
+        /// </summary>
+        /// <param name="nakshatraNumber">Nakshatra number (1-27)</param>
+        /// <returns>Nakshatra name in Sanskrit</returns>
+        public static string GetNakshatraName(int nakshatraNumber)
+        {
+            if (nakshatraNumber < 1 || nakshatraNumber > 27)
+                throw new ArgumentException("Nakshatra number must be between 1 and 27", nameof(nakshatraNumber));
+
+            return Constants.VimshottariConstants.NakshatraNames[nakshatraNumber - 1];
+        }
+
+        /// <summary>
+        /// Get nakshatra lord (ruling planet) from nakshatra number.
+        /// </summary>
+        /// <param name="nakshatraNumber">Nakshatra number (1-27)</param>
+        /// <returns>Ruling planet for the nakshatra</returns>
+        public static Enums.DashaPlanet GetNakshatraLord(int nakshatraNumber)
+        {
+            if (nakshatraNumber < 1 || nakshatraNumber > 27)
+                throw new ArgumentException("Nakshatra number must be between 1 and 27", nameof(nakshatraNumber));
+
+            return Constants.VimshottariConstants.NakshatraLords[nakshatraNumber - 1];
+        }
+
+        /// <summary>
+        /// Get planet name for Dasha display.
+        /// </summary>
+        /// <param name="planet">Dasha planet enum value</param>
+        /// <returns>Planet name as string</returns>
+        public static string GetDashaPlanetName(Enums.DashaPlanet planet)
+        {
+            return Constants.VimshottariConstants.PlanetNames[planet];
+        }
+
+        /// <summary>
+        /// Get next planet in Vimshottari dasha sequence.
+        /// </summary>
+        /// <param name="currentPlanet">Current dasha planet</param>
+        /// <returns>Next planet in the sequence</returns>
+        public static Enums.DashaPlanet GetNextDashaPlanet(Enums.DashaPlanet currentPlanet)
+        {
+            var currentIndex = Array.IndexOf(Constants.VimshottariConstants.DashaSequence, currentPlanet);
+            var nextIndex = (currentIndex + 1) % Constants.VimshottariConstants.DashaSequence.Length;
+            return Constants.VimshottariConstants.DashaSequence[nextIndex];
+        }
+
+        /// <summary>
+        /// Calculate pada (quarter) of nakshatra from degrees in nakshatra.
+        /// Each pada is 3°20' (one quarter of 13°20').
+        /// </summary>
+        /// <param name="degreesInNakshatra">Degrees traversed in the nakshatra (0-13.333...)</param>
+        /// <returns>Pada number (1-4)</returns>
+        public static int GetNakshatraPada(double degreesInNakshatra)
+        {
+            // Each pada is 3°20' (13.333333 / 4)
+            return (int)(degreesInNakshatra / (Constants.VimshottariConstants.NAKSHATRA_SPAN / 4)) + 1;
+        }
     }
 }

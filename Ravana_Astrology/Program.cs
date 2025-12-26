@@ -12,6 +12,7 @@ builder.Services.Configure<SwissEphemerisOptions>(
 
 // Register services
 builder.Services.AddScoped<IAstrologyCalculationService, AstrologyCalculationService>();
+builder.Services.AddScoped<IVimshottariDashaService, VimshottariDashaService>();
 
 // Configure CORS to allow all origins
 builder.Services.AddCors(options =>

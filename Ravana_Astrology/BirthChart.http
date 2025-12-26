@@ -92,7 +92,7 @@ POST {{Ravana_Astrology_HostAddress}}/api/birthchart/calculate
 Content-Type: application/json
 
 {
-  "birthDate": "1987-09-10",
+  "birthDate": "1987-10-09",
   "birthTime": "14:41",
   "latitude": 6.9271,
   "longitude": 79.8612,
@@ -103,4 +103,108 @@ Content-Type: application/json
 
 # curl -X POST http://localhost:5188/api/birthchart/calculate \
 #   -H "Content-Type: application/json" \
-#   -d '{"birthDate":"1987-09-10","birthTime":"14:41","latitude":6.9271,"longitude":79.8612,"timeZoneId":"Asia/Colombo","houseSystem":"WholeSign","includeTrueNode":true}'
+#   -d '{"birthDate":"1987-10-09","birthTime":"14:41","latitude":6.9271,"longitude":79.8612,"timeZoneId":"Asia/Colombo","houseSystem":"WholeSign","includeTrueNode":true}'
+
+###############################################
+# Vimshottari Dasha Calculation
+###############################################
+
+### Calculate Vimshottari Dasha - Detail Level 1 (Mahadasha only)
+POST {{Ravana_Astrology_HostAddress}}/api/dasha/vimshottari
+Content-Type: application/json
+
+{
+  "birthDate": "1987-10-09",
+  "birthTime": "14:41",
+  "latitude": 6.9271,
+  "longitude": 79.8612,
+  "timeZoneId": "Asia/Colombo",
+  "detailLevel": 1,
+  "yearsToCalculate": 120
+}
+
+# curl -X POST http://localhost:5188/api/dasha/vimshottari \
+#   -H "Content-Type: application/json" \
+#   -d '{"birthDate":"1987-10-09","birthTime":"14:41","latitude":6.9271,"longitude":79.8612,"timeZoneId":"Asia/Colombo","detailLevel":1,"yearsToCalculate":120}'
+
+###
+
+### Calculate Vimshottari Dasha - Detail Level 2 (Mahadasha + Antardasha) [Default]
+POST {{Ravana_Astrology_HostAddress}}/api/dasha/vimshottari
+Content-Type: application/json
+
+{
+  "birthDate": "1987-10-09",
+  "birthTime": "14:41",
+  "latitude": 6.9271,
+  "longitude": 79.8612,
+  "timeZoneId": "Asia/Colombo",
+  "detailLevel": 2,
+  "yearsToCalculate": 120
+}
+
+# curl -X POST http://localhost:5188/api/dasha/vimshottari \
+#   -H "Content-Type: application/json" \
+#   -d '{"birthDate":"1987-10-09","birthTime":"14:41","latitude":6.9271,"longitude":79.8612,"timeZoneId":"Asia/Colombo","detailLevel":2,"yearsToCalculate":120}'
+
+###
+
+### Calculate Vimshottari Dasha - Detail Level 3 (+ Pratyantardasha)
+# WARNING: Large response (~810 periods)
+POST {{Ravana_Astrology_HostAddress}}/api/dasha/vimshottari
+Content-Type: application/json
+
+{
+  "birthDate": "1987-10-09",
+  "birthTime": "14:41",
+  "latitude": 6.9271,
+  "longitude": 79.8612,
+  "timeZoneId": "Asia/Colombo",
+  "detailLevel": 3,
+  "yearsToCalculate": 120
+}
+
+# curl -X POST http://localhost:5188/api/dasha/vimshottari \
+#   -H "Content-Type: application/json" \
+#   -d '{"birthDate":"1987-10-09","birthTime":"14:41","latitude":6.9271,"longitude":79.8612,"timeZoneId":"Asia/Colombo","detailLevel":3,"yearsToCalculate":120}'
+
+###
+
+### Calculate Vimshottari Dasha - Detail Level 4 (+ Sookshma)
+# WARNING: Very large response (~7,290 periods) - May take several seconds
+POST {{Ravana_Astrology_HostAddress}}/api/dasha/vimshottari
+Content-Type: application/json
+
+{
+  "birthDate": "1987-10-09",
+  "birthTime": "14:41",
+  "latitude": 6.9271,
+  "longitude": 79.8612,
+  "timeZoneId": "Asia/Colombo",
+  "detailLevel": 4,
+  "yearsToCalculate": 1
+}
+
+# curl -X POST http://localhost:5188/api/dasha/vimshottari \
+#   -H "Content-Type: application/json" \
+#   -d '{"birthDate":"1987-10-09","birthTime":"14:41","latitude":6.9271,"longitude":79.8612,"timeZoneId":"Asia/Colombo","detailLevel":4,"yearsToCalculate":120}'
+
+###
+
+### Calculate Vimshottari Dasha - Partial Period (50 years only)
+POST {{Ravana_Astrology_HostAddress}}/api/dasha/vimshottari
+Content-Type: application/json
+
+{
+  "birthDate": "1987-10-09",
+  "birthTime": "14:41",
+  "latitude": 6.9271,
+  "longitude": 79.8612,
+  "timeZoneId": "Asia/Colombo",
+  "detailLevel": 2,
+  "yearsToCalculate": 50
+}
+
+# curl -X POST http://localhost:5188/api/dasha/vimshottari \
+#   -H "Content-Type: application/json" \
+#   -d '{"birthDate":"1987-10-09","birthTime":"14:41","latitude":6.9271,"longitude":79.8612,"timeZoneId":"Asia/Colombo","detailLevel":2,"yearsToCalculate":50}'
