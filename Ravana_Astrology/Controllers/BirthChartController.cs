@@ -132,6 +132,52 @@ namespace Ravana_Astrology.Controllers
         }
 
         /// <summary>
+        /// Calculate when each planet will next change from its current zodiac sign to the next sign.
+        /// Returns the next sign change date for all 9 planets (Sun, Moon, Mars, Mercury, Jupiter, Venus, Saturn, Rahu, Ketu).
+        /// </summary>
+        /// <param name="request">Planet sign change calculation request</param>
+        /// <returns>List of planets with their current signs and next sign change dates</returns>
+        [HttpPost("planet-sign-changes")]
+        [ProducesResponseType(typeof(List<PlanetSignChangeResponse>), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status500InternalServerError)]
+        public async Task<ActionResult<List<PlanetSignChangeResponse>>> GetPlanetSignChanges(
+            [FromBody] PlanetSignRequest request)
+        {
+            try
+            {
+                if (!ModelState.IsValid)
+                {
+                    return BadRequest(ModelState);
+                }
+
+                var result = await _astrologyService.CalculatePlanetSignChanges(request);
+                return Ok(result);
+            }
+            catch (ArgumentException ex)
+            {
+                _logger.LogWarning(ex, "Invalid request parameters");
+                return BadRequest(new ProblemDetails
+                {
+                    Title = "Invalid Request",
+                    Detail = ex.Message,
+                    Status = StatusCodes.Status400BadRequest
+                });
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error calculating planet sign changes");
+                return StatusCode(StatusCodes.Status500InternalServerError,
+                    new ProblemDetails
+                    {
+                        Title = "Calculation Error",
+                        Detail = "An error occurred while calculating planet sign changes",
+                        Status = StatusCodes.Status500InternalServerError
+                    });
+            }
+        }
+
+        /// <summary>
         /// Calculate planetary Navāṁśa positions (D9 divisional chart) and return a
         /// simplified list of planets with their Navāṁśa signs.
         /// </summary>

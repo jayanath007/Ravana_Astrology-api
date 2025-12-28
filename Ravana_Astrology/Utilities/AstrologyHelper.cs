@@ -299,5 +299,44 @@ namespace Ravana_Astrology.Utilities
             // Each pada is 3°20' (13.333333 / 4)
             return (int)(degreesInNakshatra / (Constants.VimshottariConstants.NAKSHATRA_SPAN / 4)) + 1;
         }
+
+        /// <summary>
+        /// Get the target sign boundary (in degrees) that a planet will cross next.
+        /// For direct motion: returns the next sign boundary.
+        /// For retrograde motion: returns the previous sign boundary.
+        /// </summary>
+        /// <param name="longitude">Current ecliptic longitude in degrees (0-360)</param>
+        /// <param name="isRetrograde">True if planet is moving retrograde (backward)</param>
+        /// <returns>Target boundary in degrees (0, 30, 60, ..., 330)</returns>
+        public static double GetNextSignBoundary(double longitude, bool isRetrograde)
+        {
+            var normalizedLongitude = NormalizeDegrees(longitude);
+            var currentSign = (int)(normalizedLongitude / 30.0);
+
+            if (isRetrograde)
+            {
+                // Moving backward - target is the start of current sign
+                return currentSign * 30.0;
+            }
+            else
+            {
+                // Moving forward - target is the start of next sign
+                return (currentSign + 1) * 30.0;
+            }
+        }
+
+        /// <summary>
+        /// Check if a planet is very close to a sign boundary (within 0.1 degrees).
+        /// </summary>
+        /// <param name="longitude">Ecliptic longitude in degrees</param>
+        /// <returns>True if planet is within 0.1 degrees of a sign boundary</returns>
+        public static bool IsAtSignBoundary(double longitude)
+        {
+            var normalizedLongitude = NormalizeDegrees(longitude);
+            var degreeInSign = normalizedLongitude % 30.0;
+
+            // Check if within 0.1 degrees of sign start (0°) or sign end (30°)
+            return degreeInSign < 0.1 || degreeInSign > 29.9;
+        }
     }
 }
