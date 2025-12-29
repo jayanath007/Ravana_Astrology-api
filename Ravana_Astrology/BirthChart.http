@@ -44,6 +44,26 @@ Content-Type: application/json
 #   -d '{"birthDate":"1987-10-09","birthTime":"14:41","latitude":6.9271,"longitude":79.8612,"timeZoneId":"Asia/Colombo"}'
 
 ###############################################
+# Planet Sign Changes Endpoint
+###############################################
+
+### Get Planet Sign Changes - Sri Lanka (Colombo)
+POST {{Ravana_Astrology_HostAddress}}/api/birthchart/planet-sign-changes
+Content-Type: application/json
+
+{
+  "birthDate": "1987-10-09",
+  "birthTime": "14:41",
+  "latitude": 6.9271,
+  "longitude": 79.8612,
+  "timeZoneId": "Asia/Colombo"
+}
+
+# curl -X POST http://localhost:5188/api/birthchart/planet-sign-changes \
+#   -H "Content-Type: application/json" \
+#   -d '{"birthDate":"1987-10-09","birthTime":"14:41","latitude":6.9271,"longitude":79.8612,"timeZoneId":"Asia/Colombo"}'
+
+###############################################
 # Ascendant (Lagna) Endpoint
 ###############################################
 
